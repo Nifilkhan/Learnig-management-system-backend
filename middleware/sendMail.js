@@ -9,7 +9,7 @@ const transport = nodemailer.createTransport({
         user: process.env.OTP_SENDING_EMAIL,
         pass: process.env.OTP_SENDING_EMAIL_PASSWORD,
     },
-    logger:true,
+    // logger:true,
 })
 
 export default transport

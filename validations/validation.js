@@ -17,7 +17,7 @@ export const otpValidationSchema = Joi.object({
 
 export const signinSchema = Joi.object({
     email: Joi.string().min(6).max(60).required().email(),
-    password: Joi.string().required().pattern(new RegExp('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/'))
+    password: Joi.string().required().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/)
   });
 
 export default {signupSchema,otpValidationSchema,signinSchema}

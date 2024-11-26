@@ -9,6 +9,7 @@ export const userScehma = mongoose.Schema({
     password:{type:String,required:true,trim:true,select:false},
     verified: { type: Boolean, default: false },
     verificationCode: { type: Number ,select:false},
+    roles:{type:String, enum:['student','instructor','admin']}
 }, {timestamps:true})
 
 const User = mongoose.model('User',userScehma);

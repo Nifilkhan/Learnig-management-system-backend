@@ -4,6 +4,9 @@ import { otpValidationSchema, signinSchema, signupSchema } from "../validations/
 import { generateOTP } from "../utils/otp.js";
 import transport from "../middleware/sendMail.js";
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 //signup function(User registration)
@@ -82,6 +85,12 @@ export const signin = async(req,res) => {
         if(error) {
             return res.status(401).json({message:'Invalid credentials'})        
         }
+
+        if(email === process.env.STATIC_ADMIN_EMAIL && password === process.env.STATIC_ADMIN_PASSWORD) {
+            // console.log(email);
+            // console.log(password);
+            return res.status(200).json({role:'admin',message:'Admin logged in succesfully'})
+        }
     const user = await User.findOne({email}).select('+password');
 
     if(!user) {
@@ -96,12 +105,14 @@ export const signin = async(req,res) => {
     const token = jwt.sign(
         {
             userId:user._id,
+            role:user.roles
         },
         process.env.JWT_SECRET,
         {
             expiresIn:'4h'
         }
     )
+    console.log(token)
 
     //storing jwt in cookie storage and it expires in 4hr
     res.cookie('Authorization',token,{
@@ -110,7 +121,7 @@ export const signin = async(req,res) => {
         maxAge: 4 * 60 * 60 * 1000,
         sameSite: 'Strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     })
-        res.status(200).json({message:'User loggedin succesfully'})
+        res.status(200).json({message:'User loggedin succesfully',role:user.roles})
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Server error' });
